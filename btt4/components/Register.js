@@ -1,97 +1,86 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import 'nativewind';
+import OtpVerification from './OtpVerification';
+import { register } from '../services/apiService';
 
 const Register = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [isOtpRequired, setIsOtpRequired] = useState(false);
+
   const registerSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('Required'),
-    password: Yup.string().min(6, 'Too short').required('Required'),
     name: Yup.string().required('Required'),
-    phone: Yup.string().required('Required'),
+    email: Yup.string().email('Invalid email format').required('Required'),
+    password: Yup.string().min(6, 'Too short').required('Required'),
   });
 
   const handleRegister = async (values) => {
+    setName(values.name);
+    setEmail(values.email);
+    setPassword(values.password);
+    setIsOtpRequired(true);
+  };
+
+  const handleOtpSuccess = async () => {
     try {
-      await AsyncStorage.setItem('userEmail', values.email);
-      await AsyncStorage.setItem('userPassword', values.password);
-      await AsyncStorage.setItem('userName', values.name);
-      await AsyncStorage.setItem('userPhone', values.phone);
-      await AsyncStorage.setItem('isActivated', 'false');
-
-      const response = await fetch('http://192.168.97.173:3000/send-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: values.email }),
-      });
-
-      const data = await response.json();
-      if (data.otp !== null) {
-        await AsyncStorage.setItem('otp', data.otp + "");
-        navigation.navigate('VerifyOTP', { email: values.email });
-      } else {
-        Alert.alert('Failed to send OTP');
-      }
+      const user = await register({ name, email, password });
+      navigation.navigate('Home', { user });
     } catch (error) {
-      console.error('Error during registration:', error);
+      Alert.alert('Registration failed. Please check again');
     }
   };
 
   return (
     <Formik
-      initialValues={{ email: '', password: '', name: '', phone: '' }}
+      initialValues={{ name: '', email: '', password: '' }}
       validationSchema={registerSchema}
       onSubmit={handleRegister}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-        <View className="flex-1 justify-center bg-gray-100 p-6">
+        <View style={styles.container}>
+          <Text style={styles.title}>Register</Text>
           <TextInput
-            className="border border-gray-300 p-3 rounded mb-3"
+            style={styles.input}
             placeholder="Name"
             onChangeText={handleChange('name')}
             onBlur={handleBlur('name')}
             value={values.name}
           />
-          {errors.name && <Text className="text-red-500 mb-2">{errors.name}</Text>}
+          {errors.name && <Text style={styles.error}>{errors.name}</Text>}
           <TextInput
-            className="border border-gray-300 p-3 rounded mb-3"
+            style={styles.input}
             placeholder="Email"
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
             value={values.email}
+            keyboardType="email-address"
           />
-          {errors.email && <Text className="text-red-500 mb-2">{errors.email}</Text>}
+          {errors.email && <Text style={styles.error}>{errors.email}</Text>}
           <TextInput
-            className="border border-gray-300 p-3 rounded mb-3"
-            placeholder="Phone"
-            onChangeText={handleChange('phone')}
-            onBlur={handleBlur('phone')}
-            value={values.phone}
-          />
-          {errors.phone && <Text className="text-red-500 mb-2">{errors.phone}</Text>}
-          <TextInput
-            className="border border-gray-300 p-3 rounded mb-3"
+            style={styles.input}
             placeholder="Password"
             secureTextEntry
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
             value={values.password}
           />
-          {errors.password && <Text className="text-red-500 mb-2">{errors.password}</Text>}
-          <TouchableOpacity
-            onPress={handleSubmit}
-            className="bg-blue-500 py-3 rounded mb-3"
-          >
-            <Text className="text-white text-center">Register</Text>
-          </TouchableOpacity>
+          {errors.password && <Text style={styles.error}>{errors.password}</Text>}
+          <Button title="Register" onPress={handleSubmit} />
+          {isOtpRequired && <OtpVerification email={email} onSuccess={handleOtpSuccess} />}
         </View>
       )}
     </Formik>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 24, marginBottom: 20 },
+  input: { width: '80%', padding: 10, marginBottom: 10, borderWidth: 1, borderColor: '#ccc' },
+  error: { color: 'red' },
+});
 
 export default Register;

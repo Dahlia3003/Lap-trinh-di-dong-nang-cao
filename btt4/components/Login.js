@@ -1,23 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import OtpVerification from './OtpVerification';
+import { login } from '../services/apiService';
 import 'nativewind';
 
 const Login = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isOtpRequired, setIsOtpRequired] = useState(false);
+
   const loginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email format').required('Required'),
     password: Yup.string().min(6, 'Too short').required('Required'),
   });
 
   const handleLogin = async (values) => {
-    const savedEmail = await AsyncStorage.getItem('userEmail');
-    const savedPassword = await AsyncStorage.getItem('userPassword');
+    setEmail(values.email);
+    setPassword(values.password);
+    setIsOtpRequired(true);
+  };
 
-    if (values.email === savedEmail && values.password === savedPassword) {
-      navigation.navigate('Home');
-    } else {
+  const handleOtpSuccess = async () => {
+    try {
+      const user = await login(email, password);
+      navigation.navigate('Home', { user });
+    } catch (error) {
       Alert.alert('Login failed. Please check again');
     }
   };
@@ -69,10 +78,11 @@ const Login = ({ navigation }) => {
             >
               <Text className="text-center">Register</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+            <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
               <Text className="text-center text-blue-600">Forgot password?</Text>
             </TouchableOpacity>
           </View>
+          {isOtpRequired && <OtpVerification email={email} onSuccess={handleOtpSuccess} />}
         </View>
       )}
     </Formik>
