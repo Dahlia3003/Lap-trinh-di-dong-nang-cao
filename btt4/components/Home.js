@@ -34,6 +34,7 @@ const Home = ({ navigation }) => {
         </>
       )}
       <Button onPress={() => navigation.navigate('Profile')} title="Go to Profile" />
+      <Button onPress={() => navigation.navigate('ProductList')} title="Go to Products" />
       <Button onPress={handleLogout} title="Logout" />
     </View>
   );

@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Home from './components/Home';
 import Profile from './components/Profile'; // Import Profile component
 import ChangePassword from './components/ChangePassword'; // Nhập ChangePassword
+import ProductList from './components/ProductList'; // Import ProductList
 
 const Stack = createStackNavigator();
 
@@ -27,7 +28,7 @@ export default function App() {
   }, []);
 
   if (isLoading) {
-    return null; // Hoặc bạn có thể hiển thị một màn hình loading
+    return null;
   }
 
   return (
@@ -38,6 +39,7 @@ export default function App() {
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="ProductList" component={ProductList} />
       </Stack.Navigator>
     </NavigationContainer>
   );

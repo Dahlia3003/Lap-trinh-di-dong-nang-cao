@@ -8,7 +8,7 @@ const apiService = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Thêm dòng này để gửi cookie với mỗi yêu cầu
+  withCredentials: true, // Đảm bảo rằng cookie được gửi cùng
 });
 
 // Thêm interceptor để thêm JWT vào header của mỗi yêu cầu
@@ -87,6 +87,76 @@ export const changePassword = async (email, newPassword) => {
     return response.data;
   } catch (error) {
     console.error('Change Password error:', error);
+    throw error;
+  }
+};
+
+export const updateUserInfo = async (email, newName) => {
+  try {
+    const response = await apiService.post('/user/update-info', { email, newName });
+    return response.data;
+  } catch (error) {
+    console.error('Update User Info error:', error);
+    throw error;
+  }
+};
+
+export const getAllProducts = async (page, size) => {
+  try {
+    const response = await apiService.get('/products', { params: { page, size } });
+    return response.data;
+  } catch (error) {
+    console.error('Get All Products error:', error);
+    throw error;
+  }
+};
+
+export const searchProducts = async (query, page, size) => {
+  try {
+    const response = await apiService.get('/products/search', { params: { query, page, size } });
+    return response.data;
+  } catch (error) {
+    console.error('Search Products error:', error);
+    throw error;
+  }
+};
+
+export const filterProducts = async (category, brand, productCondition, page, size) => {
+  try {
+    const response = await apiService.get('/products/filter', { params: { category, brand, productCondition, page, size } });
+    return response.data;
+  } catch (error) {
+    console.error('Filter Products error:', error);
+    throw error;
+  }
+};
+
+export const getCategories = async () => {
+  try {
+    const response = await apiService.get('/products/categories');
+    return response.data;
+  } catch (error) {
+    console.error('Get Categories error:', error);
+    throw error;
+  }
+};
+
+export const getBrands = async () => {
+  try {
+    const response = await apiService.get('/products/brands');
+    return response.data;
+  } catch (error) {
+    console.error('Get Brands error:', error);
+    throw error;
+  }
+};
+
+export const getConditions = async () => {
+  try {
+    const response = await apiService.get('/products/conditions');
+    return response.data;
+  } catch (error) {
+    console.error('Get Conditions error:', error);
     throw error;
   }
 };
