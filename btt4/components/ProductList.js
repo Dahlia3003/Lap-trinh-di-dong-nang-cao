@@ -85,6 +85,14 @@ const ProductList = () => {
     }
   };
 
+  const handleRefresh = () => {
+    setSearchQuery('');
+    setFilter({ category: '', brand: '', productCondition: '' });
+    setPage(0);
+    setHasMore(true);
+    fetchProducts(true);
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -126,6 +134,7 @@ const ProductList = () => {
           ))}
         </Picker>
         <Button title="Filter" onPress={handleFilter} />
+        <Button title="Refresh" onPress={handleRefresh} /> {/* Nút refresh mới */}
       </View>
       <FlatList
         data={products}
