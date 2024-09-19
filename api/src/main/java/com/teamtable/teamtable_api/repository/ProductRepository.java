@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
     @Query("SELECT p FROM Product p WHERE " +
             "(:category IS NULL OR p.category = :category) AND " +
             "(:brand IS NULL OR p.brand = :brand) AND " +
@@ -17,4 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("category") Product.ProductCategory category,
             @Param("brand") Product.ProductBrand brand,
             @Param("productCondition") Product.ProductCondition productCondition,
-            Pageable pageable);}
+            Pageable pageable);
+    Page<Product> findByOrderBySalesDesc(Pageable pageable);
+}
+

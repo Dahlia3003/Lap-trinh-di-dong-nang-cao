@@ -22,7 +22,12 @@ public class ProductService {
         return productRepository.findByNameContainingIgnoreCase(query, pageable);
     }
 
+    public Page<Product> getTopSellingProducts(Pageable pageable) {
+        return productRepository.findByOrderBySalesDesc(pageable);
+    }
+
     public Page<Product> filterProducts(Product.ProductCategory category, Product.ProductBrand brand, Product.ProductCondition productCondition, Pageable pageable) {
         return productRepository.findByCategoryAndBrandAndProductCondition(category, brand, productCondition, pageable);
     }
+
 }

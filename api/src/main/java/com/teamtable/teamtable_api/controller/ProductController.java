@@ -5,6 +5,7 @@ import com.teamtable.teamtable_api.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,5 +54,13 @@ public class ProductController {
     @GetMapping("/conditions")
     public List<Product.ProductCondition> getConditions() {
         return Arrays.asList(Product.ProductCondition.values());
+    }
+
+    @GetMapping("/top-selling")
+    public Page<Product> getTopSellingProducts(@RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        System.out.println(productService.getTopSellingProducts(pageable));
+        return productService.getTopSellingProducts(pageable);
     }
 }

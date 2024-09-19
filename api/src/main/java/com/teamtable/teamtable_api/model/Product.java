@@ -24,6 +24,7 @@ public class Product {
     private BigDecimal price;
 
     private int quantity;
+    private int sales; // Thêm trường sales
 
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
