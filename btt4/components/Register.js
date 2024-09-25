@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import OtpVerification from './OtpVerification';
 import { register } from '../services/apiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import OtpPage from "./OtpPage";
 
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -71,7 +72,8 @@ const Register = ({ navigation }) => {
           />
           {errors.password && <Text style={styles.error}>{errors.password}</Text>}
           <Button title="Register" onPress={handleSubmit} />
-          {isOtpRequired && <OtpPage route={{ params: { email, onSuccess: handleOtpSuccess } }} />}        </View>
+          {isOtpRequired && <OtpPage route={{ params: { email, onSuccess: handleOtpSuccess } }} />}
+        </View>
       )}
     </Formik>
   );

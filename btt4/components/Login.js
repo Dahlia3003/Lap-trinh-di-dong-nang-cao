@@ -6,6 +6,7 @@ import { login } from '../services/apiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'nativewind';
 import OtpVerification from "./OtpVerification";
+import OtpPage from "./OtpPage";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ const Login = ({ navigation }) => {
     setPassword(values.password);
     setIsOtpRequired(true);
   };
-  
+
   const handleOtpSuccess = async () => {
     try {
       const user = await login(email, password);
@@ -34,14 +35,13 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
     <Formik
       initialValues={{ email: '', password: '' }}
       validationSchema={loginSchema}
       onSubmit={handleLogin}
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-        <View className="flex items-center justify-center min-h-screen bg-gray-100">
+        <View style={styles.container}>
           <View className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
             <View className="flex items-center justify-center mb-6">
               <Image
@@ -85,16 +85,16 @@ const Login = ({ navigation }) => {
               <Text className="text-center text-blue-600">Forgot password?</Text>
             </TouchableOpacity>
           </View>
-          {isOtpRequired && <OtpVerification route={{ params: { email, onSuccess: handleOtpSuccess } }} />}
+          {isOtpRequired && <OtpPage route={{ params: { email, onSuccess: handleOtpSuccess } }} />}
         </View>
       )}
     </Formik>
-    </View>
   );
 };
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
-  profileContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  input: { width: '80%', padding: 10, borderColor: 'gray', borderWidth: 1, borderRadius: 5, marginBottom: 10 },
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: { fontSize: 24, marginBottom: 20 },
+  input: { width: '80%', padding: 10, marginBottom: 10, borderWidth: 1, borderColor: '#ccc' },
+  error: { color: 'red' },
 });
 export default Login;
