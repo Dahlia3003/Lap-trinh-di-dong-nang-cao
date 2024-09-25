@@ -2,17 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import OtpVerification from './OtpVerification';
 import { register } from '../services/apiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OtpPage from "./OtpPage";
 
 const Register = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [isOtpRequired, setIsOtpRequired] = useState(false);
-
   const registerSchema = Yup.object().shape({
     name: Yup.string().required('Required'),
     email: Yup.string().email('Invalid email format').required('Required'),
@@ -20,14 +14,21 @@ const Register = ({ navigation }) => {
   });
 
   const handleRegister = async (values) => {
-    setName(values.name);
-    setEmail(values.email);
-    setPassword(values.password);
-    setIsOtpRequired(true);
+    try {
+      await AsyncStorage.setItem('registerName', values.name);
+      await AsyncStorage.setItem('registerEmail', values.email);
+      await AsyncStorage.setItem('registerPassword', values.password);
+      navigation.navigate('OtpPage', { email: values.email, onSuccess: handleOtpSuccess });
+    } catch (error) {
+      Alert.alert('Failed to save registration information');
+    }
   };
 
   const handleOtpSuccess = async () => {
     try {
+      const name = await AsyncStorage.getItem('registerName');
+      const email = await AsyncStorage.getItem('registerEmail');
+      const password = await AsyncStorage.getItem('registerPassword');
       const user = await register({ name, email, password });
       await AsyncStorage.setItem('user', JSON.stringify(user));
       navigation.navigate('Home');
@@ -72,7 +73,6 @@ const Register = ({ navigation }) => {
           />
           {errors.password && <Text style={styles.error}>{errors.password}</Text>}
           <Button title="Register" onPress={handleSubmit} />
-          {isOtpRequired && <OtpPage route={{ params: { email, onSuccess: handleOtpSuccess } }} />}
         </View>
       )}
     </Formik>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
 import Header from './Header';
 import Footer from './Footer';
+import {changePassword, sendOtp, verifyOtp} from "../services/apiService";
 
 const ChangePassword = ({ navigation }) => {
   const [email, setEmail] = useState('');
