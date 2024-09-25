@@ -55,9 +55,11 @@ const ProductList = () => {
 
   const fetchFilterData = async () => {
     try {
-      const categoriesData = await getCategories();
-      const brandsData = await getBrands();
-      const conditionsData = await getConditions();
+      const [categoriesData, brandsData, conditionsData] = await Promise.all([
+        getCategories(),
+        getBrands(),
+        getConditions(),
+      ]);
       setCategories(categoriesData);
       setBrands(brandsData);
       setConditions(conditionsData);
@@ -115,89 +117,88 @@ const ProductList = () => {
     setHasMore(true);
     fetchProducts(true);
     fetchTopSellingProducts(true);
-    handleFilter;
   };
 
   return (
-    <View style={styles.container}>
-      <Header />
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search products..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSubmitEditing={handleSearch}
-        />
-        <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
-          <FontAwesome name="filter" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      {showFilters && (
-        <View style={styles.filterContainer}>
-          <Picker
-            selectedValue={filter.category}
-            style={styles.picker}
-            onValueChange={(itemValue) => setFilter({ ...filter, category: itemValue })}
-          >
-            <Picker.Item label="Select Category" value="" />
-            {categories.map((category) => (
-              <Picker.Item key={category} label={category} value={category} />
-            ))}
-          </Picker>
-          <Picker
-            selectedValue={filter.brand}
-            style={styles.picker}
-            onValueChange={(itemValue) => setFilter({ ...filter, brand: itemValue })}
-          >
-            <Picker.Item label="Select Brand" value="" />
-            {brands.map((brand) => (
-              <Picker.Item key={brand} label={brand} value={brand} />
-            ))}
-          </Picker>
-          <Picker
-            selectedValue={filter.productCondition}
-            style={styles.picker}
-            onValueChange={(itemValue) => setFilter({ ...filter, productCondition: itemValue })}
-          >
-            <Picker.Item label="Select Condition" value="" />
-            {conditions.map((condition) => (
-              <Picker.Item key={condition} label={condition} value={condition} />
-            ))}
-          </Picker>
-          <Button title="Filter" onPress={handleFilter} />
-          <Button title="Refresh" onPress={handleRefresh} />
+      <View style={styles.container}>
+        <Header />
+        <View style={styles.searchContainer}>
+          <TextInput
+              style={styles.searchInput}
+              placeholder="Search products..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={handleSearch}
+          />
+          <TouchableOpacity onPress={() => setShowFilters(!showFilters)}>
+            <FontAwesome name="filter" size={24} color="black" />
+          </TouchableOpacity>
         </View>
-      )}
-      <FlatList
-        data={topSellingProducts}
-        renderItem={({ item }) => <ProductCard product={item} />}
-        keyExtractor={(item) => item.id.toString()}
-        horizontal
-        style={styles.topSellingList}
-        onEndReached={() => fetchTopSellingProducts()}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={isLoading && <ActivityIndicator size="large" color="#0000ff" />}
-      />
-      <FlatList
-        data={products}
-        renderItem={({ item }) => <ProductCard product={item} />}
-        keyExtractor={(item) => item.id.toString()}
-        onEndReached={() => fetchProducts()}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={isLoading && <ActivityIndicator size="large" color="#0000ff" />}
-      />
-      <Footer />
-    </View>
+        {showFilters && (
+            <View style={styles.filterContainer}>
+              <Picker
+                  selectedValue={filter.category}
+                  style={styles.picker}
+                  onValueChange={(itemValue) => setFilter({ ...filter, category: itemValue })}
+              >
+                <Picker.Item label="Select Category" value="" />
+                {categories.map((category) => (
+                    <Picker.Item key={category} label={category} value={category} />
+                ))}
+              </Picker>
+              <Picker
+                  selectedValue={filter.brand}
+                  style={styles.picker}
+                  onValueChange={(itemValue) => setFilter({ ...filter, brand: itemValue })}
+              >
+                <Picker.Item label="Select Brand" value="" />
+                {brands.map((brand) => (
+                    <Picker.Item key={brand} label={brand} value={brand} />
+                ))}
+              </Picker>
+              <Picker
+                  selectedValue={filter.productCondition}
+                  style={styles.picker}
+                  onValueChange={(itemValue) => setFilter({ ...filter, productCondition: itemValue })}
+              >
+                <Picker.Item label="Select Condition" value="" />
+                {conditions.map((condition) => (
+                    <Picker.Item key={condition} label={condition} value={condition} />
+                ))}
+              </Picker>
+              <Button title="Filter" onPress={handleFilter} />
+              <Button title="Refresh" onPress={handleRefresh} />
+            </View>
+        )}
+        <FlatList
+            data={topSellingProducts}
+            renderItem={({ item }) => <ProductCard product={item} />}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            style={styles.topSellingList}
+            onEndReached={() => fetchTopSellingProducts()}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+        />
+        <FlatList
+            data={products}
+            renderItem={({ item }) => <ProductCard product={item} />}
+            keyExtractor={(item) => item.id.toString()}
+            onEndReached={() => fetchProducts()}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={isLoading && <ActivityIndicator size="large" color="#0000ff" />}
+        />
+        <Footer />
+      </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
+  container: { flex: 1, padding: 10, backgroundColor: '#f9f9f9' },
   searchContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   searchInput: { flex: 1, padding: 10, borderColor: 'gray', borderWidth: 1, borderRadius: 5, marginRight: 10 },
-  filterContainer: { marginBottom: 10 },
-  picker: { height: 50, width: '100%' },
+  filterContainer: { marginBottom: 10, backgroundColor: '#fff', borderRadius: 5, padding: 10 },
+  picker: { height: 50, width: '100%', backgroundColor: '#f0f0f0' },
   topSellingList: { minHeight: 90, marginBottom: 10 },
 });
 

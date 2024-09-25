@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from './Header';
 import Footer from './Footer';
@@ -21,7 +21,7 @@ const Profile = ({ navigation }) => {
     };
 
     fetchUser();
-  }, [user]);
+  }, [navigation]);
 
   const handleEditInfo = async () => {
     try {
@@ -53,39 +53,68 @@ const Profile = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Header />
-      <View style={styles.profileContainer}>
-        {user && (
-          <>
-            <Text>Welcome, {user.name}!</Text>
-            <Text>Email: {user.email}</Text>
-            {isEditing ? (
+      <View style={styles.container}>
+        <Header />
+        <View style={styles.profileContainer}>
+          {user && (
               <>
-                <TextInput
-                  style={styles.input}
-                  placeholder="New Name"
-                  value={newName}
-                  onChangeText={setNewName}
-                />
-                <Button title="Save" onPress={handleEditInfo} />
+                <Text style={styles.welcomeText}>Welcome, {user.name}!</Text>
+                <Text style={styles.emailText}>Email: {user.email}</Text>
+                {isEditing ? (
+                    <>
+                      <TextInput
+                          style={styles.input}
+                          placeholder="New Name"
+                          value={newName}
+                          onChangeText={setNewName}
+                      />
+                      <TouchableOpacity style={styles.button} onPress={handleEditInfo}>
+                        <Text style={styles.buttonText}>Save</Text>
+                      </TouchableOpacity>
+                    </>
+                ) : (
+                    <TouchableOpacity style={styles.button} onPress={() => setIsEditing(true)}>
+                      <Text style={styles.buttonText}>Edit Info</Text>
+                    </TouchableOpacity>
+                )}
               </>
-            ) : (
-              <Button title="Edit Info" onPress={() => setIsEditing(true)} />
-            )}
-          </>
-        )}
-        <Button title="Logout" onPress={handleLogout} />
+          )}
+          <TouchableOpacity style={styles.button} onPress={handleLogout}>
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+        <Footer />
       </View>
-      <Footer />
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10 },
+  container: { flex: 1, padding: 10, backgroundColor: '#f0f4f8' },
   profileContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  input: { width: '80%', padding: 10, borderColor: 'gray', borderWidth: 1, borderRadius: 5, marginBottom: 10 },
+  welcomeText: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, color: '#333' },
+  emailText: { fontSize: 16, marginBottom: 20, color: '#666' },
+  input: {
+    width: '80%',
+    padding: 10,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+    backgroundColor: '#ffffff',
+  },
+  button: {
+    width: '80%',
+    padding: 12,
+    borderRadius: 5,
+    backgroundColor: '#007AFF',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
 
 export default Profile;

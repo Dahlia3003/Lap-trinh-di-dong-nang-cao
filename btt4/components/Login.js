@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -35,67 +35,129 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <Formik
-      initialValues={{ email: '', password: '' }}
-      validationSchema={loginSchema}
-      onSubmit={handleLogin}
-    >
-      {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-        <View style={styles.container}>
-          <View className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-            <View className="flex items-center justify-center mb-6">
-              <Image
-                source={require('../assets/logo.png')}
-                className="w-24 h-24"
-                resizeMode="contain"
-              />
+      <Formik
+          initialValues={{ email: '', password: '' }}
+          validationSchema={loginSchema}
+          onSubmit={handleLogin}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+            <View style={styles.container}>
+              <View style={styles.card}>
+                <Image
+                    source={require('../assets/logo.png')}
+                    style={styles.logo}
+                    resizeMode="contain"
+                />
+                <Text style={styles.title}>Login</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    value={values.email}
+                    keyboardType="email-address"
+                />
+                {errors.email && <Text style={styles.error}>{errors.email}</Text>}
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    secureTextEntry
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    value={values.password}
+                />
+                {errors.password && <Text style={styles.error}>{errors.password}</Text>}
+                <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+                  <Text style={styles.buttonText}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Register')}
+                    style={styles.buttonSecondary}
+                >
+                  <Text style={styles.buttonText}>Register</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
+                  <Text style={styles.link}>Forgot password?</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text className="text-2xl font-bold text-center">Login</Text>
-            <TextInput
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-              placeholder="Email"
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              keyboardType="email-address"
-            />
-            {errors.email && <Text className="text-red-500">{errors.email}</Text>}
-            <TextInput
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-              placeholder="Password"
-              secureTextEntry
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              value={values.password}
-            />
-            {errors.password && <Text className="text-red-500">{errors.password}</Text>}
-            <TouchableOpacity
-              onPress={handleSubmit}
-              className="w-full px-4 py-2 text-white bg-blue-600 rounded-lg"
-            >
-              <Text className="text-center">Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Register')}
-              className="w-full px-4 py-2 text-white bg-gray-600 rounded-lg"
-            >
-              <Text className="text-center">Register</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('ChangePassword')}>
-              <Text className="text-center text-blue-600">Forgot password?</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </Formik>
+        )}
+      </Formik>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  title: { fontSize: 24, marginBottom: 20 },
-  input: { width: '80%', padding: 10, marginBottom: 10, borderWidth: 1, borderColor: '#ccc' },
-  error: { color: 'red' },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f4f8',
+    paddingHorizontal: 20,
+  },
+  card: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+    marginBottom: 20,
+    alignSelf: 'center',
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 15,
+  },
+  input: {
+    backgroundColor: '#f9f9f9',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginVertical: 8,
+    fontSize: 16,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonSecondary: {
+    backgroundColor: '#888',
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  link: {
+    color: '#007AFF',
+    textAlign: 'center',
+    marginTop: 10,
+  },
 });
 
 export default Login;

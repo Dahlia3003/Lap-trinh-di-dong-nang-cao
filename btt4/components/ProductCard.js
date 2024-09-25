@@ -13,34 +13,71 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <View>
-      <TouchableOpacity style={styles.card} onPress={handlePress}>
-        <Text style={styles.name}>{product.name}</Text>
-        <Text style={styles.price}>${product.price}</Text>
-        <Text style={styles.category}>{product.category}</Text>
-      </TouchableOpacity>
-      <Modal visible={isModalVisible} animationType="slide" onRequestClose={closeModal}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>{product.name}</Text>
-          <Text>{product.description}</Text>
-          <Text>Price: ${product.price}</Text>
-          <Text>Category: {product.category}</Text>
-          <Text>Brand: {product.brand}</Text>
-          <Text>Condition: {product.productCondition}</Text>
-          <Button title="Close" onPress={closeModal} />
-        </View>
-      </Modal>
-    </View>
+      <View style={styles.card}>
+        <TouchableOpacity style={styles.cardContent} onPress={handlePress}>
+          <Text style={styles.name}>{product.name}</Text>
+          <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+          <Text style={styles.category}>{product.category}</Text>
+        </TouchableOpacity>
+        <Modal visible={isModalVisible} animationType="slide" onRequestClose={closeModal}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>{product.name}</Text>
+            <Text style={styles.description}>{product.description}</Text>
+            <Text style={styles.modalPrice}>Price: ${product.price.toFixed(2)}</Text>
+            <Text>Category: {product.category}</Text>
+            <Text>Brand: {product.brand}</Text>
+            <Text>Condition: {product.condition}</Text>
+            <Button title="Close" onPress={closeModal} />
+          </View>
+        </Modal>
+      </View>
   );
 };
 
 const styles = StyleSheet.create({
-  card: { padding: 10, margin: 10, backgroundColor: '#fff', borderRadius: 5 },
-  name: { fontSize: 18, fontWeight: 'bold' },
-  price: { fontSize: 16, color: 'green' },
-  category: { fontSize: 14, color: 'gray' },
-  modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  modalTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 10,
+    marginVertical: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+  cardContent: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  price: {
+    fontSize: 14,
+    color: '#888',
+  },
+  category: {
+    fontSize: 12,
+    color: '#666',
+  },
+  modalContainer: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  description: {
+    marginVertical: 10,
+    fontSize: 14,
+  },
+  modalPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default ProductCard;
