@@ -4,6 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import OtpVerification from './OtpVerification';
 import { register } from '../services/apiService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Register = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -27,7 +28,8 @@ const Register = ({ navigation }) => {
   const handleOtpSuccess = async () => {
     try {
       const user = await register({ name, email, password });
-      navigation.navigate('Home', { user });
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      navigation.navigate('Home');
     } catch (error) {
       Alert.alert('Registration failed. Please check again');
     }
@@ -69,8 +71,7 @@ const Register = ({ navigation }) => {
           />
           {errors.password && <Text style={styles.error}>{errors.password}</Text>}
           <Button title="Register" onPress={handleSubmit} />
-          {isOtpRequired && <OtpVerification email={email} onSuccess={handleOtpSuccess} />}
-        </View>
+          {isOtpRequired && <OtpPage route={{ params: { email, onSuccess: handleOtpSuccess } }} />}        </View>
       )}
     </Formik>
   );

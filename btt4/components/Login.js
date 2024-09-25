@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert, StyleSheet} from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import OtpVerification from './OtpVerification';
 import { login } from '../services/apiService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'nativewind';
+import OtpVerification from "./OtpVerification";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -21,17 +22,19 @@ const Login = ({ navigation }) => {
     setPassword(values.password);
     setIsOtpRequired(true);
   };
-
+  
   const handleOtpSuccess = async () => {
     try {
       const user = await login(email, password);
-      navigation.navigate('Home', { user });
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      navigation.navigate('Home');
     } catch (error) {
       Alert.alert('Login failed. Please check again');
     }
   };
 
   return (
+    <View style={styles.container}>
     <Formik
       initialValues={{ email: '', password: '' }}
       validationSchema={loginSchema}
@@ -82,11 +85,16 @@ const Login = ({ navigation }) => {
               <Text className="text-center text-blue-600">Forgot password?</Text>
             </TouchableOpacity>
           </View>
-          {isOtpRequired && <OtpVerification email={email} onSuccess={handleOtpSuccess} />}
+          {isOtpRequired && <OtpVerification route={{ params: { email, onSuccess: handleOtpSuccess } }} />}
         </View>
       )}
     </Formik>
+    </View>
   );
 };
-
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 10 },
+  profileContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  input: { width: '80%', padding: 10, borderColor: 'gray', borderWidth: 1, borderRadius: 5, marginBottom: 10 },
+});
 export default Login;

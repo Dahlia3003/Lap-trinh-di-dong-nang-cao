@@ -24,7 +24,7 @@ const Profile = ({ navigation }) => {
     };
 
     fetchUser();
-  }, []);
+  }, [user]);
 
   const handleSendOtp = async () => {
     try {
@@ -51,7 +51,8 @@ const Profile = ({ navigation }) => {
     try {
       await updateUserInfo(user.email, newName);
       Alert.alert('User info updated successfully');
-      setUser({ ...user, name: newName });
+      const updatedUser = { ...user, name: newName };
+      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
       setIsEditing(false);
     } catch (error) {
       Alert.alert('Failed to update user info');

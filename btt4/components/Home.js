@@ -18,7 +18,7 @@ const Home = ({ navigation }) => {
     };
 
     fetchUser();
-  }, []);
+  }, [user]);
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('user');
