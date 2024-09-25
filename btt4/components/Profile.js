@@ -3,6 +3,7 @@ import { View, Text, Button, TextInput, Alert, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from './Header';
 import Footer from './Footer';
+import {sendOtp, updateUserInfo, verifyOtp} from "../services/apiService";
 
 const Profile = ({ navigation }) => {
   const [user, setUser] = useState(null);
@@ -27,6 +28,7 @@ const Profile = ({ navigation }) => {
 
   const handleSendOtp = async () => {
     try {
+
       await sendOtp(user.email);
       setIsOtpSent(true);
       Alert.alert('OTP sent successfully');
