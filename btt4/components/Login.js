@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert, StyleSheet} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, Alert, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { login } from '../services/apiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'nativewind';
-import OtpVerification from "./OtpVerification";
-import OtpPage from "./OtpPage";
 
 const Login = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isOtpRequired, setIsOtpRequired] = useState(false);
-
   const loginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email format').required('Required'),
     password: Yup.string().min(6, 'Too short').required('Required'),
   });
 
   const handleLogin = async (values) => {
-    setEmail(values.email);
-    setPassword(values.password);
-    setIsOtpRequired(true);
+    try {
+      await AsyncStorage.setItem('loginEmail', values.email);
+      await AsyncStorage.setItem('loginPassword', values.password);
+      navigation.navigate('OtpPage', { email: values.email, onSuccess: handleOtpSuccess });
+    } catch (error) {
+      Alert.alert('Failed to save login information');
+    }
   };
 
   const handleOtpSuccess = async () => {
     try {
+      const email = await AsyncStorage.getItem('loginEmail');
+      const password = await AsyncStorage.getItem('loginPassword');
       const user = await login(email, password);
       await AsyncStorage.setItem('user', JSON.stringify(user));
       navigation.navigate('Home');
@@ -85,16 +85,17 @@ const Login = ({ navigation }) => {
               <Text className="text-center text-blue-600">Forgot password?</Text>
             </TouchableOpacity>
           </View>
-          {isOtpRequired && <OtpPage route={{ params: { email, onSuccess: handleOtpSuccess } }} />}
         </View>
       )}
     </Formik>
   );
 };
+
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   title: { fontSize: 24, marginBottom: 20 },
   input: { width: '80%', padding: 10, marginBottom: 10, borderWidth: 1, borderColor: '#ccc' },
   error: { color: 'red' },
 });
+
 export default Login;
