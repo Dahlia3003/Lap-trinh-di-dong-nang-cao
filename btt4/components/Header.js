@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Header = () => {
@@ -7,7 +7,7 @@ const Header = () => {
 
   return (
     <View style={styles.header}>
-      <Button title="Back" onPress={() => navigation.goBack()} />
+      {/* Nút back mặc định sẽ tự động được hiển thị nếu có navigation.goBack() */}
     </View>
   );
 };

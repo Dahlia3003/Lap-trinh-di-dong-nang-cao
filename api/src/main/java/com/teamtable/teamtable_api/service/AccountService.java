@@ -7,6 +7,10 @@ import com.teamtable.teamtable_api.repository.AccountRepository;
 import com.teamtable.teamtable_api.repository.OtpTokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,6 +29,9 @@ public class AccountService {
     @Autowired
     private JWTUtils jwtUtils;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
     @Transactional
     public Account getAccount(Long id) {
         return accountRepository.findById(id).orElse(null);
@@ -36,6 +43,7 @@ public class AccountService {
             throw new IllegalArgumentException("Email already exists");
         }
         Account newAccount = new Account(name, email, password);
+        System.out.println(newAccount);
         accountRepository.save(newAccount);
         return newAccount;
     }
@@ -62,7 +70,21 @@ public class AccountService {
         otpToken.setOtpExpiry(otpExpiry);
         otpTokenRepository.save(otpToken);
 
-        // Gửi OTP đến email của người dùng (cần tích hợp với dịch vụ email)
+        // Gửi OTP đến email của người dùng
+        sendOtpEmail(email, otp);
+    }
+
+    private void sendOtpEmail(String email, String otp) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("Your OTP Code");
+            message.setText("Your OTP code is: " + otp);
+            mailSender.send(message);
+        } catch (MailException e) {
+            // Xử lý lỗi gửi email
+            throw new IllegalStateException("Failed to send OTP email", e);
+        }
     }
 
     @Transactional

@@ -53,6 +53,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:8081");
         config.addAllowedOrigin("http://192.168.216.11:8081");
         config.addAllowedOrigin("http://192.168.1.101:8081");
+        config.addAllowedOrigin("http://192.168.1.226:8081");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);

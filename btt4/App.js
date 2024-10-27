@@ -8,7 +8,8 @@ import Home from './components/Home';
 import Profile from './components/Profile'; // Import Profile component
 import ChangePassword from './components/ChangePassword'; // Nhập ChangePassword
 import ProductList from './components/ProductList';
-import OtpPage from "./components/OtpPage"; // Import ProductList
+import OtpPage from "./components/OtpPage";
+import Cart from './components/Cart'; // Import Cart component
 
 const Stack = createStackNavigator();
 
@@ -42,6 +43,7 @@ export default function App() {
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="ProductList" component={ProductList} />
         <Stack.Screen name="OtpPage" component={OtpPage} />
+        <Stack.Screen name="Cart" component={Cart} />
       </Stack.Navigator>
     </NavigationContainer>
   );

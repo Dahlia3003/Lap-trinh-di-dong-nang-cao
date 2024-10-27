@@ -16,6 +16,9 @@ const Footer = () => {
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ProductList')}>
                 <Text style={styles.buttonText}>Products</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Cart')}>
+                <Text style={styles.buttonText}>Cart</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -28,6 +31,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#007AFF',
         borderTopWidth: 1,
         borderColor: '#0056b3',
+        borderRadius: 25, // Thêm bo góc cho footer
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
     },
     button: {
         flex: 1,
