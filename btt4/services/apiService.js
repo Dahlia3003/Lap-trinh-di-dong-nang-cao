@@ -183,19 +183,28 @@ export const getCart = async (accountId) => {
 };
 
 export const addToCart = async (accountId, productId, quantity) => {
-  console.log(`Adding productId: ${productId} to cart for accountId: ${accountId} with quantity: ${quantity}`); // Log thông tin thêm sản phẩm
+  console.log(`Adding productId: ${productId} to cart for accountId: ${accountId} with quantity: ${quantity}`);
   const response = await apiService.post(`/cart/add`, null, {
     params: { accountId, productId, quantity },
   });
-  console.log('Add to Cart Response:', response.data); // Log phản hồi
+  console.log('Add to Cart Response:', response.data);
   return response.data;
 };
 
 export const removeFromCart = async (accountId, productId) => {
-  console.log(`Removing productId: ${productId} from cart for accountId: ${accountId}`); // Log thông tin xóa sản phẩm
+  console.log(`Removing productId: ${productId} from cart for accountId: ${accountId}`);
   const response = await apiService.delete(`/cart/remove`, {
     params: { accountId, productId },
   });
-  console.log('Remove from Cart Response:', response.data); // Log phản hồi
+  console.log('Remove from Cart Response:', response.data);
+  return response.data;
+};
+
+export const updateCartQuantity = async (accountId, productId, quantity) => {
+  console.log(`Updating productId: ${productId} in cart for accountId: ${accountId} with new quantity: ${quantity}`);
+  const response = await apiService.put(`/cart/update`, null, {
+    params: { accountId, productId, quantity },
+  });
+  console.log('Update Cart Quantity Response:', response.data);
   return response.data;
 };
